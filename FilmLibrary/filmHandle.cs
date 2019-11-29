@@ -8,74 +8,71 @@ namespace FilmLibrary
 {
     public class filmHandle
     {
-        public static string filmsByTitle()
+        
+        public List<Film> readFilmList(Dictionary<string, Dictionary<string, string>> listOfFilmDictionary)
         {
-            StringBuilder sr = new StringBuilder();
-            var filmDictionaryes = FileHandling.ReadFromFile("../../testFilms.ini");
-            Console.Write("Give me the film Title: ");
-            string title = Console.ReadLine();
-            if (filmDictionaryes.ContainsKey("[" + title + "]"))
+            List<Film> filmObjectList = new List<Film>();
+            
+            foreach(var element in listOfFilmDictionary)
             {
-                var thefilm = filmDictionaryes["[" + title + "]"];
-                string result = $"Title = {title}\nDirector = {thefilm["director"]},\nRelease year = {thefilm["release_year"]}\nStars = {thefilm["stars"]}\nBudget = {thefilm["budget"]}\n";
-
-                return result;
-            }
-            else
-            {
-                return "This film is not in the file.";
+                filmObjectList.Add(new Film(element.Key,
+                                                element.Value["director"],
+                                                Convert.ToInt32(element.Value["release_year"]),
+                                                element.Value["stars"],
+                                                Convert.ToInt32(element.Value["budget"])));
             }
 
+            return filmObjectList;
+        }
+        public  string FilmsByTitle(List<Film> FilmList,string title)
+        {
+            foreach (Film element in FilmList)
+            {
+                
+                if (element.Title == "[" + title + "]")
+                {
+                    return element.ToString();
+                }
+            }
+            return "There is no such film";
+            
+                
+        }
+        public  string displayFilms(List<Film> FilmList)
+        {
+            string result = "";
+            foreach (Film element in FilmList)
+            {
+                result += element.ToString() + "\n";
+            }
+            return result;
+
+        }
+        public  List<Film> addFilm(List<Film> FilmList,string title ,string director,int release_year ,string stars,int budget)
+        {
+
+            Film addedFilm = new Film(title, director, Convert.ToInt32(release_year), stars, Convert.ToInt32(budget));
+
+            FilmList.Add(addedFilm);
+            return FilmList;
 
 
 
         }
-        public static void displayFilms()
+        public List<Film> deleteFilmByTitle(List<Film> FilmList, string title)
         {
-            var filmDictionaryes = FileHandling.ReadFromFile("../../testFilms.ini");
 
-            foreach (var title in filmDictionaryes.Keys)
+            foreach (Film element in FilmList)
             {
-                var thefilm = filmDictionaryes[title];
-                string result = $"Title = {title}\nDirector = {thefilm["director"]}" +
-                    $",\nRelease year = {thefilm["release_year"]}\nStars = {thefilm["stars"]}\nBudget = {thefilm["budget"]}\n";
-
-                Console.WriteLine(result);
+                if (element.Title ==  title)
+                {
+                    FilmList.Remove(element);
+                    return FilmList;
+                }
+                
+               
             }
-
-        }
-        public static Dictionary<string, Dictionary<string, string>> addFilm()
-        {
-            Dictionary<string, Dictionary<string, string>> filmDictionary = FileHandling.ReadFromFile("../../testFilms.ini");
-            Dictionary<string, string> oneField = new Dictionary<string, string>();
-            string[] keywords = { "director", "release_year", "stars", "budget" };
-            Console.Write("Give me the film Title: ");
-            string title = "[" + Console.ReadLine() + "]";
-            foreach (string element in keywords)
-            {
-                Console.Write($"Give me the {element}: ");
-                oneField.Add(element, Console.ReadLine());
-            }
-            filmDictionary.Add(title, oneField);
-            return filmDictionary;
-
-
-
-        }
-        public static Dictionary<string, Dictionary<string, string>> deleteFilmByTitle()
-        {
-            var filmDictionaryes = FileHandling.ReadFromFile("../../testFilms.ini");
-            Console.Write("Give me the film Title: ");
-            string title = "[" + Console.ReadLine() + "]";
-            if (filmDictionaryes.ContainsKey(title))
-            {
-                filmDictionaryes.Remove(title);
-                return filmDictionaryes;
-            }
-            else
-            {
-                return filmDictionaryes;
-            }
+            return FilmList;
         }
     }
 

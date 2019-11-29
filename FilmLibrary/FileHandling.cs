@@ -9,7 +9,7 @@ namespace FilmLibrary
 {
     public class FileHandling
     {
-        public static Dictionary<string, Dictionary<string, string>> ReadFromFile(string FileName)
+        public  Dictionary<string, Dictionary<string, string>> ReadFromFile(string FileName)
         {
 
             Dictionary<string, Dictionary<string, string>> allFilm = new Dictionary<string, Dictionary<string, string>>();
@@ -39,17 +39,14 @@ namespace FilmLibrary
             }
             return allFilm;
         }
-        public static void writeToFile(string fileName, Dictionary<string, Dictionary<string, string>> filmDictionaries)
+        public  void writeToFile(string fileName, List<Film> filmList)
         {
             using (StreamWriter sw = new StreamWriter(fileName))
             {
-                foreach (var element in filmDictionaries)
+                foreach (Film element in filmList)
                 {
-                    sw.WriteLine(element.Key);
-                    foreach (var el in element.Value)
-                    {
-                        sw.WriteLine($"{el.Key}={el.Value}");
-                    }
+                    sw.WriteLine($"{element.Title}\ndirector={element.Director}\nrelease_year={element.ReleaseYear}\n" +
+                                $"stars={element.Stars}\nbudget={element.Budget}");
                 }
             }
         }
